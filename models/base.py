@@ -103,7 +103,7 @@ class BaseLearner(object):
 
         return np.concatenate(y_pred), np.concatenate(y_true)  # [N, topk]
 
-    
+
     def _eval_maha(self, loader, init_means, class_means):
         self._network.eval()
         vectors, y_true = self._extract_vectors(loader)
