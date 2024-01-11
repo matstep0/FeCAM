@@ -1,0 +1,93 @@
+2024-01-11 18:27:17,102 [trainer.py] => config: ./exps/FeCAM_cifar100.json
+2024-01-11 18:27:17,102 [trainer.py] => prefix: train
+2024-01-11 18:27:17,102 [trainer.py] => dataset: cifar100
+2024-01-11 18:27:17,102 [trainer.py] => memory_size: 0
+2024-01-11 18:27:17,102 [trainer.py] => shuffle: True
+2024-01-11 18:27:17,102 [trainer.py] => init_cls: 50
+2024-01-11 18:27:17,102 [trainer.py] => increment: 10
+2024-01-11 18:27:17,102 [trainer.py] => model_name: fecam
+2024-01-11 18:27:17,102 [trainer.py] => convnet_type: resnet18
+2024-01-11 18:27:17,102 [trainer.py] => device: [device(type='cuda', index=0)]
+2024-01-11 18:27:17,102 [trainer.py] => seed: 1993
+2024-01-11 18:27:17,102 [trainer.py] => init_epochs: 200
+2024-01-11 18:27:17,102 [trainer.py] => init_lr: 0.1
+2024-01-11 18:27:17,102 [trainer.py] => init_weight_decay: 0.0005
+2024-01-11 18:27:17,102 [trainer.py] => batch_size: 128
+2024-01-11 18:27:17,102 [trainer.py] => num_workers: 8
+2024-01-11 18:27:17,102 [trainer.py] => T: 5
+2024-01-11 18:27:17,102 [trainer.py] => beta: 0.5
+2024-01-11 18:27:17,102 [trainer.py] => alpha1: 1
+2024-01-11 18:27:17,102 [trainer.py] => alpha2: 1
+2024-01-11 18:27:17,102 [trainer.py] => ncm: False
+2024-01-11 18:27:17,102 [trainer.py] => tukey: False
+2024-01-11 18:27:17,102 [trainer.py] => diagonal: False
+2024-01-11 18:27:17,102 [trainer.py] => per_class: True
+2024-01-11 18:27:17,103 [trainer.py] => full_cov: True
+2024-01-11 18:27:17,103 [trainer.py] => shrink: True
+2024-01-11 18:27:17,103 [trainer.py] => norm_cov: True
+Files already downloaded and verified
+Files already downloaded and verified
+2024-01-11 18:27:18,602 [data_manager.py] => [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28, 53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97, 2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7, 63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33]
+2024-01-11 18:27:18,857 [fecam.py] => Learning on 0-50
+/home/z1165703/miniconda3/lib/python3.11/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 8 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+/home/z1165703/miniconda3/lib/python3.11/site-packages/torch/utils/data/dataloader.py:557: UserWarning: This DataLoader will create 4 worker processes in total. Our suggested max number of worker in current system is 2, which is smaller than what this DataLoader is going to create. Please be aware that excessive worker creation might get DataLoader running slow or even freeze, lower the worker number to avoid potential slowness/freeze if necessary.
+  warnings.warn(_create_warning_msg(
+50
+2024-01-11 18:29:24,065 [trainer.py] => CNN: {'total': 83.44, '00-09': 87.7, '10-19': 79.6, '20-29': 84.9, '30-39': 81.0, '40-49': 84.0, 'old': 0, 'new': 83.44}
+2024-01-11 18:29:24,069 [trainer.py] => No NME accuracy
+2024-01-11 18:29:24,069 [trainer.py] => FeCAM: {'total': 83.44, '00-09': 87.7, '10-19': 79.6, '20-29': 84.9, '30-39': 81.0, '40-49': 84.0, 'old': 0, 'new': 83.44}
+2024-01-11 18:29:24,069 [trainer.py] => CNN top1 curve: [83.44]
+2024-01-11 18:29:24,069 [trainer.py] => CNN top5 curve: [96.5]
+2024-01-11 18:29:24,069 [trainer.py] => FeCAM top1 curve: [83.44]
+2024-01-11 18:29:24,069 [trainer.py] => FeCAM top5 curve: [96.5]
+
+2024-01-11 18:29:24,086 [fecam.py] => Learning on 50-60
+60
+2024-01-11 18:30:03,510 [trainer.py] => CNN: {'total': 71.75, '00-09': 82.2, '10-19': 72.8, '20-29': 78.5, '30-39': 74.9, '40-49': 68.4, '50-59': 53.7, 'old': 75.36, 'new': 53.7}
+2024-01-11 18:30:03,510 [trainer.py] => No NME accuracy
+2024-01-11 18:30:03,510 [trainer.py] => FeCAM: {'total': 70.77, '00-09': 78.9, '10-19': 67.1, '20-29': 75.4, '30-39': 72.1, '40-49': 73.1, '50-59': 58.0, 'old': 73.32, 'new': 58.0}
+2024-01-11 18:30:03,510 [trainer.py] => CNN top1 curve: [83.44, 71.75]
+2024-01-11 18:30:03,510 [trainer.py] => CNN top5 curve: [96.5, 89.6]
+2024-01-11 18:30:03,510 [trainer.py] => FeCAM top1 curve: [83.44, 70.77]
+2024-01-11 18:30:03,510 [trainer.py] => FeCAM top5 curve: [96.5, 86.87]
+
+2024-01-11 18:30:03,514 [fecam.py] => Learning on 60-70
+70
+2024-01-11 18:30:45,164 [trainer.py] => CNN: {'total': 64.66, '00-09': 75.0, '10-19': 70.1, '20-29': 77.1, '30-39': 70.6, '40-49': 64.0, '50-59': 45.8, '60-69': 50.0, 'old': 67.1, 'new': 50.0}
+2024-01-11 18:30:45,164 [trainer.py] => No NME accuracy
+2024-01-11 18:30:45,164 [trainer.py] => FeCAM: {'total': 66.2, '00-09': 77.5, '10-19': 65.5, '20-29': 74.9, '30-39': 69.6, '40-49': 71.2, '50-59': 52.5, '60-69': 52.2, 'old': 68.53, 'new': 52.2}
+2024-01-11 18:30:45,164 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66]
+2024-01-11 18:30:45,164 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54]
+2024-01-11 18:30:45,164 [trainer.py] => FeCAM top1 curve: [83.44, 70.77, 66.2]
+2024-01-11 18:30:45,164 [trainer.py] => FeCAM top5 curve: [96.5, 86.87, 83.71]
+
+2024-01-11 18:30:45,168 [fecam.py] => Learning on 70-80
+80
+2024-01-11 18:31:36,423 [trainer.py] => CNN: {'total': 59.18, '00-09': 73.6, '10-19': 68.4, '20-29': 76.9, '30-39': 69.1, '40-49': 60.6, '50-59': 37.2, '60-69': 45.7, '70-79': 41.9, 'old': 61.64, 'new': 41.9}
+2024-01-11 18:31:36,423 [trainer.py] => No NME accuracy
+2024-01-11 18:31:36,423 [trainer.py] => FeCAM: {'total': 61.91, '00-09': 75.7, '10-19': 64.6, '20-29': 73.9, '30-39': 67.8, '40-49': 69.9, '50-59': 44.3, '60-69': 49.0, '70-79': 50.1, 'old': 63.6, 'new': 50.1}
+2024-01-11 18:31:36,424 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18]
+2024-01-11 18:31:36,424 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09]
+2024-01-11 18:31:36,424 [trainer.py] => FeCAM top1 curve: [83.44, 70.77, 66.2, 61.91]
+2024-01-11 18:31:36,424 [trainer.py] => FeCAM top5 curve: [96.5, 86.87, 83.71, 81.82]
+
+2024-01-11 18:31:36,428 [fecam.py] => Learning on 80-90
+90
+2024-01-11 18:32:24,980 [trainer.py] => CNN: {'total': 54.08, '00-09': 67.9, '10-19': 63.6, '20-29': 73.2, '30-39': 68.8, '40-49': 57.2, '50-59': 32.6, '60-69': 40.9, '70-79': 38.1, '80-89': 44.4, 'old': 55.29, 'new': 44.4}
+2024-01-11 18:32:24,981 [trainer.py] => No NME accuracy
+2024-01-11 18:32:24,981 [trainer.py] => FeCAM: {'total': 58.89, '00-09': 73.4, '10-19': 62.5, '20-29': 72.4, '30-39': 67.4, '40-49': 68.5, '50-59': 42.5, '60-69': 47.0, '70-79': 47.2, '80-89': 49.1, 'old': 60.11, 'new': 49.1}
+2024-01-11 18:32:24,981 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08]
+2024-01-11 18:32:24,981 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74]
+2024-01-11 18:32:24,981 [trainer.py] => FeCAM top1 curve: [83.44, 70.77, 66.2, 61.91, 58.89]
+2024-01-11 18:32:24,981 [trainer.py] => FeCAM top5 curve: [96.5, 86.87, 83.71, 81.82, 80.56]
+
+2024-01-11 18:32:24,991 [fecam.py] => Learning on 90-100
+100
+2024-01-11 18:33:16,426 [trainer.py] => CNN: {'total': 50.36, '00-09': 57.7, '10-19': 63.6, '20-29': 71.4, '30-39': 68.5, '40-49': 56.8, '50-59': 29.6, '60-69': 38.9, '70-79': 36.6, '80-89': 42.7, '90-99': 37.8, 'old': 51.76, 'new': 37.8}
+2024-01-11 18:33:16,428 [trainer.py] => No NME accuracy
+2024-01-11 18:33:16,428 [trainer.py] => FeCAM: {'total': 56.09, '00-09': 72.6, '10-19': 61.4, '20-29': 72.0, '30-39': 66.0, '40-49': 67.7, '50-59': 38.8, '60-69': 45.4, '70-79': 43.1, '80-89': 46.3, '90-99': 47.6, 'old': 57.03, 'new': 47.6}
+2024-01-11 18:33:16,428 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08, 50.36]
+2024-01-11 18:33:16,428 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74, 79.63]
+2024-01-11 18:33:16,428 [trainer.py] => FeCAM top1 curve: [83.44, 70.77, 66.2, 61.91, 58.89, 56.09]
+2024-01-11 18:33:16,428 [trainer.py] => FeCAM top5 curve: [96.5, 86.87, 83.71, 81.82, 80.56, 79.08]

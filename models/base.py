@@ -152,7 +152,8 @@ class BaseLearner(object):
         inv_covmat = torch.linalg.pinv(cov).float().to(self._device)
         left_term = torch.matmul(x_minus_mu, inv_covmat)
         mahal = torch.matmul(left_term, x_minus_mu.T)
-        return torch.diagonal(mahal, 0).cpu().numpy()
+        det = torch.det(2 * torch.pi * cov)
+        return (1 / (torch.sqrt(det) + EPSILON)) * (-torch.exp(-torch.diagonal(mahal, 0)) / 2).cpu().numpy()
     
     def diagonalization(self, cov):
         diag = cov.clone()

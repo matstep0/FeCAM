@@ -96,7 +96,7 @@ class FeCAM(BaseLearner):
 
 
     def _train(self, train_loader, test_loader):
-        resume = True  # set resume=True to use saved checkpoints after first task
+        resume = False  # set resume=True to use saved checkpoints after first task
         if self._cur_task == 0:
             if resume:
                 self._network.load_state_dict(torch.load("{}_{}_{}_{}_{}.pkl".format(self.args["dataset"],self.args["model_name"],self.args["init_cls"],self.args["increment"],self._cur_task))["model_state_dict"])
