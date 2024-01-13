@@ -15,6 +15,7 @@ from utils.toolkit import count_parameters, target2onehot, tensor2numpy
 from torchvision import datasets, transforms
 from utils.autoaugment import CIFAR10Policy
 from utils.maha_utils import compute_common_cov, compute_new_common_cov, compute_new_cov
+from sklearn import svm
 
 EPSILON = 1e-8
 
@@ -32,6 +33,7 @@ class FeCAM(BaseLearner):
         self._common_cov_shrink = None
         self._cov_mat_shrink = []
         self._norm_cov_mat = []
+        self._ocsvm_models = {}
 
     def after_task(self):
         self._known_classes = self._total_classes
@@ -155,8 +157,19 @@ class FeCAM(BaseLearner):
                     for cov in self._cov_mat_shrink:
                         cov = self.normalize_cov2(cov)
                         self._diag_mat.append(self.diagonalization(cov))
+        
+        # ONE_CLASS SVM
+        vectors, y_true = self._extract_vectors(train_loader)
+        classes = np.unique(y_true)
+        class_to_data = {cls: [] for cls in classes}
 
-    
+        for vector, label in zip(vectors, y_true):
+            class_to_data[label].append(vector)
+
+        for cls, data in class_to_data.items():
+            model = svm.OneClassSVM(gamma='auto', nu=0.01).fit(data)
+            self._ocsvm_models[cls] = model
+
     def _build_base_protos(self):
         for class_idx in range(self._known_classes, self._total_classes):
             class_mean = self._network.fc.weight.data[class_idx]
