@@ -125,7 +125,7 @@ class BaseLearner(object):
         for i, (cls, model) in enumerate(self._ocsvm_models.items()):
             dists[:, i] = model.score_samples(vectors)
         
-        scores = dists.T  # [N, nb_classes], choose the one with the smallest distance
+        scores = dists  # [N, nb_classes], choose the one with the smallest distance
 
         return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
     
