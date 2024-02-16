@@ -59,7 +59,8 @@ class BaseLearner(object):
 
         if self.args["full_cov"] or self.args["diagonal"]:
             # y_pred, y_true = self._eval_maha(self.test_loader, self._init_protos, self._protos)
-            y_pred, y_true = self._eval_ocsvm(self.test_loader)
+            y_pred, y_true = self._eval_isolation_forests(self.test_loader)
+            # y_pred, y_true = self._eval_elliptic_envelopes(self.test_loader)
             maha_accy = self._evaluate(y_pred, y_true)
         else:
             maha_accy = None
@@ -118,7 +119,7 @@ class BaseLearner(object):
     def _eval_ocsvm(self, loader):
         self._network.eval()
         vectors, y_true = self._extract_vectors(loader)
-        # vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
 
         dists = np.zeros((len(vectors), len(self._ocsvm_models)))
 
@@ -128,7 +129,35 @@ class BaseLearner(object):
         scores = dists  # [N, nb_classes], choose the one with the smallest distance
 
         return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
-    
+
+    def _eval_elliptic_envelopes(self, loader):
+        self._network.eval()
+        vectors, y_true = self._extract_vectors(loader)
+        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
+        dists = np.zeros((len(vectors), len(self._elliptic_envelopes)))
+
+        for i, (cls, model) in enumerate(self._elliptic_envelopes.items()):
+            dists[:, i] = model.score_samples(vectors)
+        
+        scores = dists  # [N, nb_classes], choose the one with the smallest distance
+
+        return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
+
+    def _eval_isolation_forests(self, loader):
+        self._network.eval()
+        vectors, y_true = self._extract_vectors(loader)
+        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
+        dists = np.zeros((len(vectors), len(self._isolation_forests)))
+
+        for i, (cls, model) in enumerate(self._isolation_forests.items()):
+            dists[:, i] = model.score_samples(vectors)
+        
+        scores = dists  # [N, nb_classes], choose the one with the smallest distance
+
+        return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
+       
 
     def _maha_dist(self, vectors, init_means, class_means):
         vectors = torch.tensor(vectors).to(self._device)

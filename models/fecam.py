@@ -16,6 +16,10 @@ from torchvision import datasets, transforms
 from utils.autoaugment import CIFAR10Policy
 from utils.maha_utils import compute_common_cov, compute_new_common_cov, compute_new_cov
 from sklearn import svm
+from collections import namedtuple
+from sklearn.covariance import EllipticEnvelope
+import itertools
+from sklearn.ensemble import IsolationForest
 
 EPSILON = 1e-8
 
@@ -34,6 +38,8 @@ class FeCAM(BaseLearner):
         self._cov_mat_shrink = []
         self._norm_cov_mat = []
         self._ocsvm_models = {}
+        self._elliptic_envelopes = {}
+        self._isolation_forests = {}
 
     def after_task(self):
         self._known_classes = self._total_classes
@@ -158,17 +164,91 @@ class FeCAM(BaseLearner):
                         cov = self.normalize_cov2(cov)
                         self._diag_mat.append(self.diagonalization(cov))
         
-        # ONE_CLASS SVM
         vectors, y_true = self._extract_vectors(train_loader)
+        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
         classes = np.unique(y_true)
         class_to_data = {cls: [] for cls in classes}
 
         for vector, label in zip(vectors, y_true):
             class_to_data[label].append(vector)
 
+        # ONE_CLASS SVM
+
+        # print('TRAINING ONE CLASS SVM')
+
+        # accuracies = []
+        # gamma = [0.001, 0.01, 0.1, 0.5, 1, 5, 10, 20, 30, 50, 100]
+        # nu = [0.01, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99]
+        # kernel = 'rbf'
+
+        # for g, n in itertools.product(gamma, nu):
+        #     for cls, data in class_to_data.items():
+        #         model = svm.OneClassSVM(gamma=g, nu=n, kernel=kernel).fit(data)
+        #         self._ocsvm_models[cls] = model
+        #     _, _, acc = self.eval_task()
+        #     accuracies.append(acc['top1'])
+        #     print(f'gamma: {g}, nu: {n}, kernel: {kernel}, accuracy: {acc["top1"]}')
+        
+        # best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
+        # best_gamma, best_nu = list(itertools.product(gamma, nu))[best_acc_idx]
+        # print(f'OCSVM GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, gamma: {best_gamma}, nu: {best_nu}, kernel: {kernel}')
+
+        # for cls, data in class_to_data.items():
+        #     model = svm.OneClassSVM(gamma=best_gamma, nu=best_nu, kernel=kernel).fit(data)
+        #     self._ocsvm_models[cls] = model
+
+        # ELLIPTIC ENVELOPE
+
+        # print('TRAINING ELLIPTIC ENVELOPE')
+
+        # support_fraction = [0.01, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99]
+        # contamination = [0.001, 0.01, 0.1, 0.2]
+        # accuracies = []
+
+        # for (sf, c) in itertools.product(support_fraction, contamination):
+        #     for cls, data in class_to_data.items():
+        #         model = EllipticEnvelope(random_state=0, support_fraction=sf, contamination=c).fit(data)
+        #         self._elliptic_envelopes[cls] = model
+        #     _, _, acc = self.eval_task()
+        #     accuracies.append(acc['top1'])
+        #     print(f'support_fraction: {sf}, contamination: {c}, accuracy: {acc["top1"]}')
+
+        # best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
+        # best_params = list(itertools.product(support_fraction, contamination))[best_acc_idx]
+        # best_sf, best_c = best_params
+        # print(f'ELLIPTIC ENVELOPE GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, support_fraction: {best_sf}, contamination: {best_c}')
+
+        # for cls, data in class_to_data.items():
+        #     model = EllipticEnvelope(random_state=0, support_fraction=best_sf, contamination=best_c).fit(data)
+        #     self._elliptic_envelopes[cls] = model
+
+        # ISOLATION FOREST
+
+        print('TRAINING ISOLATION FOREST')
+        n_estimators = [100, 200, 300]
+        contamination = [0.001, 0.01, 0.1, 0.2]
+        max_features = [1, 2, 3, 5]
+        accuracies = []
+
+        for (ne, c, mf) in itertools.product(n_estimators, contamination, max_features):
+            for cls, data in class_to_data.items():
+                model = IsolationForest(random_state=0, n_estimators=ne, contamination=c, max_features=mf).fit(data)
+                self._isolation_forests[cls] = model
+            _, _, acc = self.eval_task()
+            accuracies.append(acc['top1'])
+            print(f'n_estimators: {ne}, contamination: {c}, max_features: {mf}, accuracy: {acc["top1"]}')
+        
+        best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
+        best_params = list(itertools.product(n_estimators, contamination, max_features))[best_acc_idx]
+        best_ne, best_c, best_mf = best_params
+        print(f'ISOLATION FOREST GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, \
+                n_estimators: {best_ne}, contamination: {best_c}, max_features: {best_mf}')
+
         for cls, data in class_to_data.items():
-            model = svm.OneClassSVM(gamma='auto', nu=0.01).fit(data)
-            self._ocsvm_models[cls] = model
+            model = IsolationForest(random_state=0, n_estimators=best_ne, contamination=best_c, max_features=best_mf).fit(data)
+            self._isolation_forests[cls] = model
+
 
     def _build_base_protos(self):
         for class_idx in range(self._known_classes, self._total_classes):
