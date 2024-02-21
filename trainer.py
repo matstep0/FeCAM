@@ -7,6 +7,10 @@ from utils.data_manager import DataManager
 from utils.toolkit import count_parameters
 import os
 import json
+import seaborn as sns
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 
 def train(args):
@@ -119,7 +123,26 @@ def _train(args):
 
             logging.info("CNN top1 curve: {}".format(cnn_curve["top1"]))
             logging.info("CNN top5 curve: {}\n".format(cnn_curve["top5"]))
+
     file.close()
+
+    assert len(model._original_covs) == 100, 'Did not calculated covs before transformations'
+    assert len(model._cov_mat) == 100, 'Did not calculated covs after transformations'
+    print('SAVING COVARIANCES')
+    np.save('original_covs.npy', np.array(model._original_covs))
+    np.save('transformed_covs.npy', np.array(model._cov_mat))
+
+    # eigvals = np.array([])
+    # for i in range(0, 100):
+    #     cov = model._original_covs[i]
+    #     eigvals = np.linalg.eigvals(cov.detach().cpu().numpy())
+    #     eigvals = -np.sort(-np.abs(eigvals))
+
+    #     sns.histplot(eigvals)
+    #     plt.show()
+
+    #     print('eigvals', eigvals)
+    #     print('cumsum', np.cumsum(eigvals / eigvals.sum()))
 
 
 def _set_device(args):

@@ -32,6 +32,9 @@ def compute_new_cov(model):
                                                                 mode='test', ret_data=True)
         idx_loader = DataLoader(idx_dataset, batch_size=model.args["batch_size"], shuffle=False, num_workers=4)
         vectors, _ = model._extract_vectors(idx_loader)
+            
+        model._original_covs.append(torch.tensor(np.cov(vectors.T)))
+        
         if model.args["tukey"]:
             vectors = model._tukeys_transform(vectors)
         

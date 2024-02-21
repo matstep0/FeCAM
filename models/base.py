@@ -59,7 +59,8 @@ class BaseLearner(object):
 
         if self.args["full_cov"] or self.args["diagonal"]:
             # y_pred, y_true = self._eval_maha(self.test_loader, self._init_protos, self._protos)
-            y_pred, y_true = self._eval_isolation_forests(self.test_loader)
+            y_pred, y_true = self._eval_ocsvm(self.test_loader)
+            # y_pred, y_true = self._eval_isolation_forests(self.test_loader)
             # y_pred, y_true = self._eval_elliptic_envelopes(self.test_loader)
             maha_accy = self._evaluate(y_pred, y_true)
         else:
@@ -124,9 +125,11 @@ class BaseLearner(object):
         dists = np.zeros((len(vectors), len(self._ocsvm_models)))
 
         for i, (cls, model) in enumerate(self._ocsvm_models.items()):
-            dists[:, i] = model.score_samples(vectors)
+            dists[:, i] = model.decision_function(vectors)
         
         scores = dists  # [N, nb_classes], choose the one with the smallest distance
+
+        print(np.argsort(-scores, axis=1)[:, : self.topk], y_true)
 
         return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
 
