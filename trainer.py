@@ -12,13 +12,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
+torch.set_printoptions(threshold=10000)
 
 def train(args):
     seed_list = copy.deepcopy(args["seed"])
     device = copy.deepcopy(args["device"])
 
-    # print('=========================================')
-    # print(f'nu: {args["ocsvm_nu"]}, gamma: {args["ocsvm_gamma"]}, kernel: {args["ocsvm_kernel"]}')
+    print('=========================================')
+    print(f'Starting run with parameters: dist={args["pca_dist"]}, vecnorm={args["pca_vecnorm"]}, pca_components={args["pca_components"]}')
 
     for seed in seed_list:
         args["seed"] = seed
@@ -125,25 +126,6 @@ def _train(args):
             logging.info("CNN top5 curve: {}\n".format(cnn_curve["top5"]))
 
     file.close()
-
-    assert len(model._original_covs) == 100, 'Did not calculated covs before transformations'
-    assert len(model._cov_mat) == 100, 'Did not calculated covs after transformations'
-    print('SAVING COVARIANCES')
-    np.save('original_covs.npy', np.array(model._original_covs))
-    np.save('transformed_covs.npy', np.array(model._cov_mat))
-
-    # eigvals = np.array([])
-    # for i in range(0, 100):
-    #     cov = model._original_covs[i]
-    #     eigvals = np.linalg.eigvals(cov.detach().cpu().numpy())
-    #     eigvals = -np.sort(-np.abs(eigvals))
-
-    #     sns.histplot(eigvals)
-    #     plt.show()
-
-    #     print('eigvals', eigvals)
-    #     print('cumsum', np.cumsum(eigvals / eigvals.sum()))
-
 
 def _set_device(args):
     device_type = args["device"]

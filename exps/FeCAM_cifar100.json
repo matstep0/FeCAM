@@ -29,7 +29,7 @@
     "full_cov": true,
     "shrink": true,
     "norm_cov": false,
-    "ocsvm_nu": 0.01,
-    "ocsvm_gamma": 0.001,
-    "ocsvm_kernel": "rbf"
+    "pca_dist": "norm2",
+    "pca_vecnorm": false,
+    "pca_components": 30
 }

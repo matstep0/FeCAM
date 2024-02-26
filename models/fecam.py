@@ -17,9 +17,10 @@ from utils.autoaugment import CIFAR10Policy
 from utils.maha_utils import compute_common_cov, compute_new_common_cov, compute_new_cov
 from sklearn import svm
 from collections import namedtuple
-from sklearn.covariance import EllipticEnvelope
+from sklearn.covariance import MinCovDet
 import itertools
 from sklearn.ensemble import IsolationForest
+from sklearn.decomposition import PCA
 
 EPSILON = 1e-8
 
@@ -37,10 +38,10 @@ class FeCAM(BaseLearner):
         self._common_cov_shrink = None
         self._cov_mat_shrink = []
         self._norm_cov_mat = []
-        self._ocsvm_models = {}
-        self._elliptic_envelopes = {}
-        self._isolation_forests = {}
-        self._original_covs = []
+        self._ocsvm_models = []
+        self._pca = []
+        self._pca_protos = []
+        self._pca_cov = []
 
     def after_task(self):
         self._known_classes = self._total_classes
@@ -88,7 +89,6 @@ class FeCAM(BaseLearner):
 
         train_dataset = data_manager.get_dataset(np.arange(self._known_classes, self._total_classes), source='train',
                                                  mode='train', shot=self.shot)  
-
         self.train_loader = DataLoader(
             train_dataset, batch_size=self.args["batch_size"], shuffle=True, num_workers=self.args["num_workers"], pin_memory=True)
         test_dataset = data_manager.get_dataset(
@@ -118,9 +118,12 @@ class FeCAM(BaseLearner):
                 )), momentum=0.9, lr=self.args["init_lr"], weight_decay=self.args["init_weight_decay"])
                 scheduler = optim.lr_scheduler.CosineAnnealingLR(
                     optimizer=optimizer, T_max=self.args["init_epochs"])
-                self._train_function(train_loader, test_loader, optimizer, scheduler)
+                self._train_function(train_loader, test_loader, optimizer, scheduler)        
             self._build_base_protos()
             self._build_protos()
+
+            self.train_pca(train_loader)
+
             if self.args["full_cov"]:
                 if self.args["per_class"]:
                     compute_new_cov(self)
@@ -146,6 +149,9 @@ class FeCAM(BaseLearner):
                 self._network_module_ptr = self._network.module
             self._build_protos()
             self._update_fc()
+
+            self.train_pca(train_loader)
+
             if self.args["full_cov"]:
                 if self.args["per_class"]:
                     compute_new_cov(self)
@@ -164,107 +170,55 @@ class FeCAM(BaseLearner):
                     for cov in self._cov_mat_shrink:
                         cov = self.normalize_cov2(cov)
                         self._diag_mat.append(self.diagonalization(cov))
+                    
+                    
+    # PCA + (n1 | n2 | maha | ocsvm) ------------------
+
+    def train_pca(self, train_loader):
+
+        # From the results of grid search, for each kernel is rbf
+        ocsvm_best_params_per_task = [
+            { 'gamma': 0.01, 'nu': 0.7 }, # 0
+            { 'gamma': 0.1, 'nu': 0.9 },  # 1
+            { 'gamma': 0.1, 'nu': 0.9 },  # 2
+            { 'gamma': 0.1, 'nu': 0.9 },  # 3
+            { 'gamma': 0.1, 'nu': 0.9 },  # 4
+            { 'gamma': 0.1, 'nu': 0.9 },  # 5
+        ]
         
         vectors, y_true = self._extract_vectors(train_loader)
-        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
 
+        if (self.args['pca_vecnorm']):
+            print('Normalising the embedded train vectors before PCA')
+            vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
+        # Organise the data
         classes = np.unique(y_true)
         class_to_data = {cls: [] for cls in classes}
-
         for vector, label in zip(vectors, y_true):
             class_to_data[label].append(vector)
 
+        # Fit PCA, cov and One-class SVM
+        for cls, data in sorted(class_to_data.items()):
+            print('Processing class:', cls)
+            
+            pca = PCA(n_components=self.args['pca_components'])
+            pca_data = pca.fit_transform(data)
+            self._pca.append(pca)
 
-        # ONE CLASS SVM AFTER GRID
-        # OCSVM GRID task: 0, accuracy: 2.0, gamma: 0.001, nu: 0.01, kernel: rbf
-        # OCSVM GRID task: 1, accuracy: 63.48, gamma: 0.001, nu: 0.01, kernel: rbf
-        # OCSVM GRID task: 2, accuracy: 56.37, gamma: 0.001, nu: 0.01, kernel: rbf
-        # OCSVM GRID task: 3, accuracy: 49.94, gamma: 0.001, nu: 0.01, kernel: rbf
-        # OCSVM GRID task: 4, accuracy: 44.47, gamma: 0.001, nu: 0.01, kernel: rbf
-        # OCSVM GRID task: 5, accuracy: 41.51, gamma: 0.001, nu: 0.01, kernel: rbf
+            cov = MinCovDet(random_state=0).fit(pca_data)
+            self._pca_cov.append(torch.tensor(cov.covariance_))
 
-        # for cls, data in class_to_data.items():
-        #     model = svm.OneClassSVM(gamma=0.001, nu=0.01, kernel='rbf').fit(data)
-        #     self._ocsvm_models[cls] = model
+            proto = torch.tensor(np.mean(pca.transform(vectors), axis=0)).to(self._device)
+            self._pca_protos.append(proto)
 
-        # ONE_CLASS SVM
+            if self.args['pca_dist'] == 'ocsvm':
+                print('Traning one-class SVM for task:', self._cur_task)
+                best_params = ocsvm_best_params_per_task[self._cur_task]
+                ocsvm = svm.OneClassSVM(gamma=best_params['gamma'], nu=best_params['nu'], kernel='rbf').fit(data)
+                self._ocsvm_models.append(ocsvm)
 
-        print('TRAINING ONE CLASS SVM')
-
-        accuracies = []
-        # gamma = [0.001, 0.01, 0.1, 0.5, 1, 5, 10, 20, 30, 50, 100]
-        # nu = [0.01, 0.05, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99]
-        
-        gamma = [0.001]
-        nu = [0.01]
-        kernel = 'rbf'
-
-        for g, n in itertools.product(gamma, nu):
-            for cls, data in class_to_data.items():
-                model = svm.OneClassSVM(gamma=g, nu=n, kernel=kernel).fit(data)
-                self._ocsvm_models[cls] = model
-            _, _, acc = self.eval_task()
-            accuracies.append(acc['top1'])
-            print(f'gamma: {g}, nu: {n}, kernel: {kernel}, accuracy: {acc["top1"]}')
-        
-        best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
-        best_gamma, best_nu = list(itertools.product(gamma, nu))[best_acc_idx]
-        print(f'OCSVM GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, gamma: {best_gamma}, nu: {best_nu}, kernel: {kernel}')
-
-        for cls, data in class_to_data.items():
-            model = svm.OneClassSVM(gamma=best_gamma, nu=best_nu, kernel=kernel).fit(data)
-            self._ocsvm_models[cls] = model
-
-        # ELLIPTIC ENVELOPE
-
-        # print('TRAINING ELLIPTIC ENVELOPE')
-
-        # support_fraction = [0.01, 0.1, 0.3, 0.5, 0.7, 0.9, 0.99]
-        # contamination = [0.001, 0.01, 0.1, 0.2]
-        # accuracies = []
-
-        # for (sf, c) in itertools.product(support_fraction, contamination):
-        #     for cls, data in class_to_data.items():
-        #         model = EllipticEnvelope(random_state=0, support_fraction=sf, contamination=c).fit(data)
-        #         self._elliptic_envelopes[cls] = model
-        #     _, _, acc = self.eval_task()
-        #     accuracies.append(acc['top1'])
-        #     print(f'support_fraction: {sf}, contamination: {c}, accuracy: {acc["top1"]}')
-
-        # best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
-        # best_params = list(itertools.product(support_fraction, contamination))[best_acc_idx]
-        # best_sf, best_c = best_params
-        # print(f'ELLIPTIC ENVELOPE GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, support_fraction: {best_sf}, contamination: {best_c}')
-
-        # for cls, data in class_to_data.items():
-        #     model = EllipticEnvelope(random_state=0, support_fraction=best_sf, contamination=best_c).fit(data)
-        #     self._elliptic_envelopes[cls] = model
-
-        # ISOLATION FOREST
-
-        # print('TRAINING ISOLATION FOREST')
-        # n_estimators = [100, 200, 300]
-        # contamination = [0.001, 0.01, 0.1, 0.2]
-        # max_features = [1, 2, 3, 5]
-        # accuracies = []
-
-        # for (ne, c, mf) in itertools.product(n_estimators, contamination, max_features):
-        #     for cls, data in class_to_data.items():
-        #         model = IsolationForest(random_state=0, n_estimators=ne, contamination=c, max_features=mf).fit(data)
-        #         self._isolation_forests[cls] = model
-        #     _, _, acc = self.eval_task()
-        #     accuracies.append(acc['top1'])
-        #     print(f'n_estimators: {ne}, contamination: {c}, max_features: {mf}, accuracy: {acc["top1"]}')
-        
-        # best_acc_idx = torch.argmax(torch.tensor(accuracies)).item()
-        # best_params = list(itertools.product(n_estimators, contamination, max_features))[best_acc_idx]
-        # best_ne, best_c, best_mf = best_params
-        # print(f'ISOLATION FOREST GRID task: {self._cur_task}, accuracy: {accuracies[best_acc_idx]}, \
-        #         n_estimators: {best_ne}, contamination: {best_c}, max_features: {best_mf}')
-
-        # for cls, data in class_to_data.items():
-        #     model = IsolationForest(random_state=0, n_estimators=best_ne, contamination=best_c, max_features=best_mf).fit(data)
-        #     self._isolation_forests[cls] = model
+    # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
 
 
     def _build_base_protos(self):
