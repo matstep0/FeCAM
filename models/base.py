@@ -58,10 +58,26 @@ class BaseLearner(object):
         cnn_accy = self._evaluate(y_pred, y_true)
 
         if self.args["full_cov"] or self.args["diagonal"]:
-            # y_pred, y_true = self._eval_maha(self.test_loader, self._init_protos, self._protos)
-            y_pred, y_true = self._eval_ocsvm(self.test_loader)
-            # y_pred, y_true = self._eval_isolation_forests(self.test_loader)
-            # y_pred, y_true = self._eval_elliptic_envelopes(self.test_loader)
+            # PCA + (n1 | n2 | maha | ocsvm) ------------------
+            
+            if self.args['pca_dist'] == 'norm1':
+                print('Classifying using 1st norm')
+                y_pred, y_true = self._eval_pca_norm(self.test_loader, norm=1)
+            elif self.args['pca_dist'] == 'norm2':
+                print('Classifying using 2nd norm')
+                y_pred, y_true = self._eval_pca_norm(self.test_loader, norm=2)
+            elif self.args['pca_dist'] == 'maha':
+                print('Classifying using Mahalanobis distance')
+                y_pred, y_true = self._eval_pca_maha(self.test_loader)
+            elif self.args['pca_dist'] == 'ocsvm':
+                print('Classifying using one-class SVM')
+                y_pred, y_true = self._eval_pca_ocsvm(self.test_loader)
+            else:
+                print('ERROR: INVALID VALUE FOR "pca_dist" PARAMETER')
+                raise ValueError()
+            
+            # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
+            
             maha_accy = self._evaluate(y_pred, y_true)
         else:
             maha_accy = None
@@ -69,6 +85,57 @@ class BaseLearner(object):
         nme_accy = None
 
         return cnn_accy, nme_accy, maha_accy
+
+
+    # PCA + (n1 | n2 | maha | ocsvm) ------------------
+
+    def _eval_pca_norm(self, loader, norm):
+        self._network.eval()
+        vectors, y_true = self._extract_vectors(loader)
+
+        if (self.args['pca_vecnorm']):
+            print('Normalising the embedded test vectors before PCA')
+            vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+        
+        dists = np.zeros((len(vectors), len(self._pca)))
+        for vec_idx, vec in enumerate(vectors):
+            for cls_idx, pca in enumerate(self._pca):
+                pca_vec = pca.transform(vec.reshape(1, -1))
+                pca_proto = self._pca_protos[cls_idx].cpu().numpy()
+                dists[vec_idx, cls_idx] = np.linalg.norm(pca_vec - pca_proto, ord=norm)
+
+        return np.argsort(-dists, axis=1)[:, : self.topk], y_true
+    
+    def _eval_pca_maha(self, loader):
+        self._network.eval()
+        vectors, y_true = self._extract_vectors(loader)
+
+        if (self.args['pca_vecnorm']):
+            print('Normalising the embedded test vectors before PCA')
+            vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
+        dists = self._maha_dist(vectors, self._pca_protos, self._pca_protos)
+        scores = dists.T
+
+        return np.argsort(-scores, axis=1)[:, : self.topk], y_true
+
+    def _eval_pca_ocsvm(self, loader):
+        self._network.eval()
+        vectors, y_true = self._extract_vectors(loader)
+
+        if (self.args['pca_vecnorm']):
+            print('Normalising the embedded test vectors before PCA')
+            vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
+
+        dists = np.zeros((len(vectors), len(self._pca)))
+        for cls_idx, pca in enumerate(self._pca):
+            ocsvm = self._ocsvm_models[cls_idx]
+            dists[:, cls_idx] = ocsvm.decision_function(pca.transform(vectors))
+        
+        return np.argsort(-dists, axis=1)[:, : self.topk], y_true
+
+    # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
+
 
     def incremental_train(self):
         pass
@@ -116,76 +183,40 @@ class BaseLearner(object):
         scores = dists.T  # [N, nb_classes], choose the one with the smallest distance
 
         return np.argsort(scores, axis=1)[:, : self.topk], y_true  # [N, topk]
-    
-    def _eval_ocsvm(self, loader):
-        self._network.eval()
-        vectors, y_true = self._extract_vectors(loader)
-        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
-
-        dists = np.zeros((len(vectors), len(self._ocsvm_models)))
-
-        for i, (cls, model) in enumerate(self._ocsvm_models.items()):
-            dists[:, i] = model.decision_function(vectors)
-        
-        scores = dists  # [N, nb_classes], choose the one with the smallest distance
-
-        print(np.argsort(-scores, axis=1)[:, : self.topk], y_true)
-
-        return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
-
-    def _eval_elliptic_envelopes(self, loader):
-        self._network.eval()
-        vectors, y_true = self._extract_vectors(loader)
-        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
-
-        dists = np.zeros((len(vectors), len(self._elliptic_envelopes)))
-
-        for i, (cls, model) in enumerate(self._elliptic_envelopes.items()):
-            dists[:, i] = model.score_samples(vectors)
-        
-        scores = dists  # [N, nb_classes], choose the one with the smallest distance
-
-        return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
-
-    def _eval_isolation_forests(self, loader):
-        self._network.eval()
-        vectors, y_true = self._extract_vectors(loader)
-        vectors = (vectors.T / (np.linalg.norm(vectors.T, axis=0) + EPSILON)).T
-
-        dists = np.zeros((len(vectors), len(self._isolation_forests)))
-
-        for i, (cls, model) in enumerate(self._isolation_forests.items()):
-            dists[:, i] = model.score_samples(vectors)
-        
-        scores = dists  # [N, nb_classes], choose the one with the smallest distance
-
-        return np.argsort(-scores, axis=1)[:, : self.topk], y_true  # [N, topk]
-       
 
     def _maha_dist(self, vectors, init_means, class_means):
         vectors = torch.tensor(vectors).to(self._device)
+
         if self.args["tukey"] and self._cur_task > 0:
             vectors = self._tukeys_transform(vectors)
         maha_dist = []
         for class_index in range(self._total_classes):
+            # PCA + (n1 | n2 | maha | ocsvm) ------------------
+            
+            pca = self._pca[class_index]
+            pca_vectors = torch.from_numpy(pca.transform(vectors.cpu())).to(self._device)
+
+            # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
             if self._cur_task == 0:
-                dist = self._mahalanobis(vectors, init_means[class_index])
+                dist = self._mahalanobis(pca_vectors, init_means[class_index])
             else:
                 if self.args["ncm"]:
-                    dist = self._mahalanobis(vectors, class_means[class_index])
+                    dist = self._mahalanobis(pca_vectors, class_means[class_index])
                 elif self.args["full_cov"]:
                     if self.args["per_class"]:
                         if self.args["norm_cov"]:
-                            dist = self._mahalanobis(vectors, class_means[class_index], self._norm_cov_mat[class_index])
+                            dist = self._mahalanobis(pca_vectors, class_means[class_index], self._norm_cov_mat[class_index])
                         elif self.args["shrink"]:
-                            dist = self._mahalanobis(vectors, class_means[class_index], self._cov_mat_shrink[class_index])
+                            print('Using shrinked, full, per class covariance')
+                            # TEST: Using _pca_cov
+                            dist = self._mahalanobis(pca_vectors, class_means[class_index], self._pca_cov[class_index])
                         else:
-                            dist = self._mahalanobis(vectors, class_means[class_index], self._cov_mat[class_index])
+                            dist = self._mahalanobis(pca_vectors, class_means[class_index], self._cov_mat[class_index])
                     else:
-                        dist = self._mahalanobis(vectors, class_means[class_index], self._common_cov)
+                        dist = self._mahalanobis(pca_vectors, class_means[class_index], self._common_cov)
                 elif self.args["diagonal"]:
                     if self.args["per_class"]:
-                        dist = self._mahalanobis(vectors, class_means[class_index], self._diag_mat[class_index])
+                        dist = self._mahalanobis(pca_vectors, class_means[class_index], self._diag_mat[class_index])
             maha_dist.append(dist)
         maha_dist = np.array(maha_dist)  # [nb_classes, N]  
         return maha_dist
@@ -193,10 +224,12 @@ class BaseLearner(object):
     def _mahalanobis(self, vectors, class_means, cov=None):
         if self.args["tukey"] and self._cur_task > 0:
             class_means = self._tukeys_transform(class_means)
-        x_minus_mu = F.normalize(vectors, p=2, dim=-1) - F.normalize(class_means, p=2, dim=-1)
+        x_minus_mu = (F.normalize(vectors, p=2, dim=-1) - F.normalize(class_means, p=2, dim=-1)).double()
         if cov is None:
-            cov = torch.eye(self._network.feature_dim)  # identity covariance matrix for euclidean distance
-        inv_covmat = torch.linalg.pinv(cov).float().to(self._device)
+            # PCA + (n1 | n2 | maha | ocsvm) ------------------
+            cov = torch.eye(self.args['pca_components'])  # identity covariance matrix for euclidean distance
+            # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
+        inv_covmat = torch.linalg.pinv(cov).double().to(self._device)
         left_term = torch.matmul(x_minus_mu, inv_covmat)
         mahal = torch.matmul(left_term, x_minus_mu.T)
         det = torch.det(2 * torch.pi * cov)
