@@ -1,0 +1,206 @@
+=========================================
+Starting run with parameters: dist=norm2, vecnorm=True, pca_components=30
+2024-02-26 23:25:11,870 [trainer.py] => config: ./exps/FeCAM_cifar100.json
+2024-02-26 23:25:11,870 [trainer.py] => prefix: train
+2024-02-26 23:25:11,870 [trainer.py] => dataset: cifar100
+2024-02-26 23:25:11,870 [trainer.py] => memory_size: 0
+2024-02-26 23:25:11,870 [trainer.py] => shuffle: True
+2024-02-26 23:25:11,870 [trainer.py] => init_cls: 50
+2024-02-26 23:25:11,870 [trainer.py] => increment: 10
+2024-02-26 23:25:11,870 [trainer.py] => model_name: fecam
+2024-02-26 23:25:11,870 [trainer.py] => convnet_type: resnet18
+2024-02-26 23:25:11,870 [trainer.py] => device: [device(type='cuda', index=0)]
+2024-02-26 23:25:11,870 [trainer.py] => seed: 1993
+2024-02-26 23:25:11,870 [trainer.py] => init_epochs: 200
+2024-02-26 23:25:11,870 [trainer.py] => init_lr: 0.1
+2024-02-26 23:25:11,870 [trainer.py] => init_weight_decay: 0.0005
+2024-02-26 23:25:11,870 [trainer.py] => batch_size: 128
+2024-02-26 23:25:11,870 [trainer.py] => num_workers: 8
+2024-02-26 23:25:11,870 [trainer.py] => T: 5
+2024-02-26 23:25:11,870 [trainer.py] => beta: 0.5
+2024-02-26 23:25:11,870 [trainer.py] => alpha1: 1
+2024-02-26 23:25:11,870 [trainer.py] => alpha2: 1
+2024-02-26 23:25:11,870 [trainer.py] => ncm: False
+2024-02-26 23:25:11,870 [trainer.py] => tukey: False
+2024-02-26 23:25:11,870 [trainer.py] => diagonal: False
+2024-02-26 23:25:11,870 [trainer.py] => per_class: True
+2024-02-26 23:25:11,870 [trainer.py] => full_cov: True
+2024-02-26 23:25:11,870 [trainer.py] => shrink: True
+2024-02-26 23:25:11,870 [trainer.py] => norm_cov: False
+2024-02-26 23:25:11,870 [trainer.py] => pca_dist: norm2
+2024-02-26 23:25:11,871 [trainer.py] => pca_vecnorm: True
+2024-02-26 23:25:11,871 [trainer.py] => pca_components: 30
+Files already downloaded and verified
+Files already downloaded and verified
+2024-02-26 23:25:14,141 [data_manager.py] => [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28, 53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97, 2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7, 63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33]
+2024-02-26 23:25:14,496 [fecam.py] => Learning on 0-50
+Normalising the embedded train vectors before PCA
+Processing class: 0
+Processing class: 1
+Processing class: 2
+Processing class: 3
+Processing class: 4
+Processing class: 5
+Processing class: 6
+Processing class: 7
+Processing class: 8
+Processing class: 9
+Processing class: 10
+Processing class: 11
+Processing class: 12
+Processing class: 13
+Processing class: 14
+Processing class: 15
+Processing class: 16
+Processing class: 17
+Processing class: 18
+Processing class: 19
+Processing class: 20
+Processing class: 21
+Processing class: 22
+Processing class: 23
+Processing class: 24
+Processing class: 25
+Processing class: 26
+Processing class: 27
+Processing class: 28
+Processing class: 29
+Processing class: 30
+Processing class: 31
+Processing class: 32
+Processing class: 33
+Processing class: 34
+Processing class: 35
+Processing class: 36
+Processing class: 37
+Processing class: 38
+Processing class: 39
+Processing class: 40
+Processing class: 41
+Processing class: 42
+Processing class: 43
+Processing class: 44
+Processing class: 45
+Processing class: 46
+Processing class: 47
+Processing class: 48
+Processing class: 49
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:27:35,855 [trainer.py] => CNN: {'total': 83.44, '00-09': 87.7, '10-19': 79.6, '20-29': 84.9, '30-39': 81.0, '40-49': 84.0, 'old': 0, 'new': 83.44}
+2024-02-26 23:27:35,856 [trainer.py] => No NME accuracy
+2024-02-26 23:27:35,856 [trainer.py] => FeCAM: {'total': 83.06, '00-09': 87.5, '10-19': 79.1, '20-29': 84.8, '30-39': 79.6, '40-49': 84.3, 'old': 0, 'new': 83.06}
+2024-02-26 23:27:35,856 [trainer.py] => CNN top1 curve: [83.44]
+2024-02-26 23:27:35,856 [trainer.py] => CNN top5 curve: [96.5]
+2024-02-26 23:27:35,856 [trainer.py] => FeCAM top1 curve: [83.06]
+2024-02-26 23:27:35,856 [trainer.py] => FeCAM top5 curve: [95.68]
+
+2024-02-26 23:27:35,868 [fecam.py] => Learning on 50-60
+Normalising the embedded train vectors before PCA
+Processing class: 50
+Processing class: 51
+Processing class: 52
+Processing class: 53
+Processing class: 54
+Processing class: 55
+Processing class: 56
+Processing class: 57
+Processing class: 58
+Processing class: 59
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:29:36,023 [trainer.py] => CNN: {'total': 71.75, '00-09': 82.2, '10-19': 72.8, '20-29': 78.5, '30-39': 74.9, '40-49': 68.4, '50-59': 53.7, 'old': 75.36, 'new': 53.7}
+2024-02-26 23:29:36,024 [trainer.py] => No NME accuracy
+2024-02-26 23:29:36,024 [trainer.py] => FeCAM: {'total': 64.87, '00-09': 81.5, '10-19': 73.5, '20-29': 72.7, '30-39': 57.1, '40-49': 63.9, '50-59': 40.5, 'old': 69.74, 'new': 40.5}
+2024-02-26 23:29:36,024 [trainer.py] => CNN top1 curve: [83.44, 71.75]
+2024-02-26 23:29:36,024 [trainer.py] => CNN top5 curve: [96.5, 89.6]
+2024-02-26 23:29:36,024 [trainer.py] => FeCAM top1 curve: [83.06, 64.87]
+2024-02-26 23:29:36,024 [trainer.py] => FeCAM top5 curve: [95.68, 91.45]
+
+2024-02-26 23:29:36,038 [fecam.py] => Learning on 60-70
+Normalising the embedded train vectors before PCA
+Processing class: 60
+Processing class: 61
+Processing class: 62
+Processing class: 63
+Processing class: 64
+Processing class: 65
+Processing class: 66
+Processing class: 67
+Processing class: 68
+Processing class: 69
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:32:18,526 [trainer.py] => CNN: {'total': 64.66, '00-09': 75.0, '10-19': 70.1, '20-29': 77.1, '30-39': 70.6, '40-49': 64.0, '50-59': 45.8, '60-69': 50.0, 'old': 67.1, 'new': 50.0}
+2024-02-26 23:32:18,531 [trainer.py] => No NME accuracy
+2024-02-26 23:32:18,531 [trainer.py] => FeCAM: {'total': 57.26, '00-09': 78.3, '10-19': 67.6, '20-29': 70.4, '30-39': 54.1, '40-49': 60.5, '50-59': 37.7, '60-69': 32.2, 'old': 61.43, 'new': 32.2}
+2024-02-26 23:32:18,531 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66]
+2024-02-26 23:32:18,531 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54]
+2024-02-26 23:32:18,531 [trainer.py] => FeCAM top1 curve: [83.06, 64.87, 57.26]
+2024-02-26 23:32:18,531 [trainer.py] => FeCAM top5 curve: [95.68, 91.45, 87.36]
+
+2024-02-26 23:32:18,543 [fecam.py] => Learning on 70-80
+Normalising the embedded train vectors before PCA
+Processing class: 70
+Processing class: 71
+Processing class: 72
+Processing class: 73
+Processing class: 74
+Processing class: 75
+Processing class: 76
+Processing class: 77
+Processing class: 78
+Processing class: 79
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:35:49,481 [trainer.py] => CNN: {'total': 59.18, '00-09': 73.6, '10-19': 68.4, '20-29': 76.9, '30-39': 69.1, '40-49': 60.6, '50-59': 37.2, '60-69': 45.7, '70-79': 41.9, 'old': 61.64, 'new': 41.9}
+2024-02-26 23:35:49,487 [trainer.py] => No NME accuracy
+2024-02-26 23:35:49,487 [trainer.py] => FeCAM: {'total': 49.64, '00-09': 68.4, '10-19': 60.7, '20-29': 68.8, '30-39': 53.2, '40-49': 53.0, '50-59': 31.5, '60-69': 28.6, '70-79': 32.9, 'old': 52.03, 'new': 32.9}
+2024-02-26 23:35:49,487 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18]
+2024-02-26 23:35:49,487 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09]
+2024-02-26 23:35:49,487 [trainer.py] => FeCAM top1 curve: [83.06, 64.87, 57.26, 49.64]
+2024-02-26 23:35:49,487 [trainer.py] => FeCAM top5 curve: [95.68, 91.45, 87.36, 83.75]
+
+2024-02-26 23:35:49,499 [fecam.py] => Learning on 80-90
+Normalising the embedded train vectors before PCA
+Processing class: 80
+Processing class: 81
+Processing class: 82
+Processing class: 83
+Processing class: 84
+Processing class: 85
+Processing class: 86
+Processing class: 87
+Processing class: 88
+Processing class: 89
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:40:09,500 [trainer.py] => CNN: {'total': 54.08, '00-09': 67.9, '10-19': 63.6, '20-29': 73.2, '30-39': 68.8, '40-49': 57.2, '50-59': 32.6, '60-69': 40.9, '70-79': 38.1, '80-89': 44.4, 'old': 55.29, 'new': 44.4}
+2024-02-26 23:40:09,507 [trainer.py] => No NME accuracy
+2024-02-26 23:40:09,507 [trainer.py] => FeCAM: {'total': 43.86, '00-09': 59.2, '10-19': 54.7, '20-29': 61.9, '30-39': 51.0, '40-49': 49.7, '50-59': 29.6, '60-69': 25.2, '70-79': 26.9, '80-89': 36.5, 'old': 44.78, 'new': 36.5}
+2024-02-26 23:40:09,507 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08]
+2024-02-26 23:40:09,507 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74]
+2024-02-26 23:40:09,507 [trainer.py] => FeCAM top1 curve: [83.06, 64.87, 57.26, 49.64, 43.86]
+2024-02-26 23:40:09,507 [trainer.py] => FeCAM top5 curve: [95.68, 91.45, 87.36, 83.75, 81.12]
+
+2024-02-26 23:40:09,519 [fecam.py] => Learning on 90-100
+Normalising the embedded train vectors before PCA
+Processing class: 90
+Processing class: 91
+Processing class: 92
+Processing class: 93
+Processing class: 94
+Processing class: 95
+Processing class: 96
+Processing class: 97
+Processing class: 98
+Processing class: 99
+Classifying using 2nd norm
+Normalising the embedded test vectors before PCA
+2024-02-26 23:45:32,200 [trainer.py] => CNN: {'total': 50.36, '00-09': 57.7, '10-19': 63.6, '20-29': 71.4, '30-39': 68.5, '40-49': 56.8, '50-59': 29.6, '60-69': 38.9, '70-79': 36.6, '80-89': 42.7, '90-99': 37.8, 'old': 51.76, 'new': 37.8}
+2024-02-26 23:45:32,201 [trainer.py] => No NME accuracy
+2024-02-26 23:45:32,201 [trainer.py] => FeCAM: {'total': 40.77, '00-09': 51.1, '10-19': 52.2, '20-29': 58.2, '30-39': 49.9, '40-49': 46.6, '50-59': 27.7, '60-69': 24.1, '70-79': 25.8, '80-89': 35.5, '90-99': 36.6, 'old': 41.23, 'new': 36.6}
+2024-02-26 23:45:32,202 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08, 50.36]
+2024-02-26 23:45:32,202 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74, 79.63]
+2024-02-26 23:45:32,202 [trainer.py] => FeCAM top1 curve: [83.06, 64.87, 57.26, 49.64, 43.86, 40.77]
+2024-02-26 23:45:32,202 [trainer.py] => FeCAM top5 curve: [95.68, 91.45, 87.36, 83.75, 81.12, 78.03]

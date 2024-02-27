@@ -8,13 +8,13 @@ import json
 # pca_dist - metric for classification
 runs = [
     { 'pca_dist': 'maha',  'pca_vecnorm': True,  'pca_components': 30 },
-    # { 'pca_dist': 'maha',  'pca_vecnorm': False, 'pca_components': 30 },
-    # { 'pca_dist': 'norm1', 'pca_vecnorm': True,  'pca_components': 30 },
-    # { 'pca_dist': 'norm1', 'pca_vecnorm': False, 'pca_components': 30 },
-    # { 'pca_dist': 'norm2', 'pca_vecnorm': True,  'pca_components': 30 },
-    # { 'pca_dist': 'norm2', 'pca_vecnorm': False, 'pca_components': 30 },
-    # { 'pca_dist': 'ocsvm', 'pca_vecnorm': True,  'pca_components': 30 },
-    # { 'pca_dist': 'ocsvm', 'pca_vecnorm': False, 'pca_components': 30 }
+    { 'pca_dist': 'maha',  'pca_vecnorm': False, 'pca_components': 30 },
+    { 'pca_dist': 'norm1', 'pca_vecnorm': True,  'pca_components': 30 },
+    { 'pca_dist': 'norm1', 'pca_vecnorm': False, 'pca_components': 30 },
+    { 'pca_dist': 'norm2', 'pca_vecnorm': True,  'pca_components': 30 },
+    { 'pca_dist': 'norm2', 'pca_vecnorm': False, 'pca_components': 30 },
+    { 'pca_dist': 'ocsvm', 'pca_vecnorm': True,  'pca_components': 30 },
+    { 'pca_dist': 'ocsvm', 'pca_vecnorm': False, 'pca_components': 30 }
 ]
 
 config_path = './exps/FeCAM_cifar100.json'

@@ -100,8 +100,8 @@ class BaseLearner(object):
         dists = np.zeros((len(vectors), len(self._pca)))
         for vec_idx, vec in enumerate(vectors):
             for cls_idx, pca in enumerate(self._pca):
-                pca_vec = torch.from_numpy(pca.transform(vec.reshape(1, -1)))
-                pca_proto = self._pca_protos[cls_idx]
+                pca_vec = pca.transform(vec.reshape(1, -1))
+                pca_proto = self._pca_protos[cls_idx].cpu().numpy()
                 dists[vec_idx, cls_idx] = np.linalg.norm(pca_vec - pca_proto, ord=norm)
 
         return np.argsort(-dists, axis=1)[:, : self.topk], y_true
@@ -116,8 +116,6 @@ class BaseLearner(object):
 
         dists = self._maha_dist(vectors, self._pca_protos, self._pca_protos)
         scores = dists.T
-
-        print('scores', scores[:5][:5])
 
         return np.argsort(-scores, axis=1)[:, : self.topk], y_true
 
@@ -188,7 +186,6 @@ class BaseLearner(object):
 
     def _maha_dist(self, vectors, init_means, class_means):
         vectors = torch.tensor(vectors).to(self._device)
-        print('vectors device', vectors.get_device())
 
         if self.args["tukey"] and self._cur_task > 0:
             vectors = self._tukeys_transform(vectors)

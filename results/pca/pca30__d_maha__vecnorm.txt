@@ -1,0 +1,606 @@
+=========================================
+Starting run with parameters: dist=maha, vecnorm=True, pca_components=30
+2024-02-26 22:44:06,974 [trainer.py] => config: ./exps/FeCAM_cifar100.json
+2024-02-26 22:44:06,975 [trainer.py] => prefix: train
+2024-02-26 22:44:06,975 [trainer.py] => dataset: cifar100
+2024-02-26 22:44:06,975 [trainer.py] => memory_size: 0
+2024-02-26 22:44:06,975 [trainer.py] => shuffle: True
+2024-02-26 22:44:06,975 [trainer.py] => init_cls: 50
+2024-02-26 22:44:06,975 [trainer.py] => increment: 10
+2024-02-26 22:44:06,975 [trainer.py] => model_name: fecam
+2024-02-26 22:44:06,975 [trainer.py] => convnet_type: resnet18
+2024-02-26 22:44:06,975 [trainer.py] => device: [device(type='cuda', index=0)]
+2024-02-26 22:44:06,975 [trainer.py] => seed: 1993
+2024-02-26 22:44:06,975 [trainer.py] => init_epochs: 200
+2024-02-26 22:44:06,975 [trainer.py] => init_lr: 0.1
+2024-02-26 22:44:06,975 [trainer.py] => init_weight_decay: 0.0005
+2024-02-26 22:44:06,975 [trainer.py] => batch_size: 128
+2024-02-26 22:44:06,975 [trainer.py] => num_workers: 8
+2024-02-26 22:44:06,975 [trainer.py] => T: 5
+2024-02-26 22:44:06,975 [trainer.py] => beta: 0.5
+2024-02-26 22:44:06,975 [trainer.py] => alpha1: 1
+2024-02-26 22:44:06,975 [trainer.py] => alpha2: 1
+2024-02-26 22:44:06,975 [trainer.py] => ncm: False
+2024-02-26 22:44:06,975 [trainer.py] => tukey: False
+2024-02-26 22:44:06,975 [trainer.py] => diagonal: False
+2024-02-26 22:44:06,975 [trainer.py] => per_class: True
+2024-02-26 22:44:06,975 [trainer.py] => full_cov: True
+2024-02-26 22:44:06,975 [trainer.py] => shrink: True
+2024-02-26 22:44:06,975 [trainer.py] => norm_cov: False
+2024-02-26 22:44:06,975 [trainer.py] => pca_dist: maha
+2024-02-26 22:44:06,975 [trainer.py] => pca_vecnorm: True
+2024-02-26 22:44:06,975 [trainer.py] => pca_components: 30
+Files already downloaded and verified
+Files already downloaded and verified
+2024-02-26 22:44:09,259 [data_manager.py] => [68, 56, 78, 8, 23, 84, 90, 65, 74, 76, 40, 89, 3, 92, 55, 9, 26, 80, 43, 38, 58, 70, 77, 1, 85, 19, 17, 50, 28, 53, 13, 81, 45, 82, 6, 59, 83, 16, 15, 44, 91, 41, 72, 60, 79, 52, 20, 10, 31, 54, 37, 95, 14, 71, 96, 98, 97, 2, 64, 66, 42, 22, 35, 86, 24, 34, 87, 21, 99, 0, 88, 27, 18, 94, 11, 12, 47, 25, 30, 46, 62, 69, 36, 61, 7, 63, 75, 5, 32, 4, 51, 48, 73, 93, 39, 67, 29, 49, 57, 33]
+2024-02-26 22:44:09,605 [fecam.py] => Learning on 0-50
+Normalising the embedded train vectors before PCA
+Processing class: 0
+Processing class: 1
+Processing class: 2
+Processing class: 3
+Processing class: 4
+Processing class: 5
+Processing class: 6
+Processing class: 7
+Processing class: 8
+Processing class: 9
+Processing class: 10
+Processing class: 11
+Processing class: 12
+Processing class: 13
+Processing class: 14
+Processing class: 15
+Processing class: 16
+Processing class: 17
+Processing class: 18
+Processing class: 19
+Processing class: 20
+Processing class: 21
+Processing class: 22
+Processing class: 23
+Processing class: 24
+Processing class: 25
+Processing class: 26
+Processing class: 27
+Processing class: 28
+Processing class: 29
+Processing class: 30
+Processing class: 31
+Processing class: 32
+Processing class: 33
+Processing class: 34
+Processing class: 35
+Processing class: 36
+Processing class: 37
+Processing class: 38
+Processing class: 39
+Processing class: 40
+Processing class: 41
+Processing class: 42
+Processing class: 43
+Processing class: 44
+Processing class: 45
+Processing class: 46
+Processing class: 47
+Processing class: 48
+Processing class: 49
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+2024-02-26 22:45:19,595 [trainer.py] => CNN: {'total': 83.44, '00-09': 87.7, '10-19': 79.6, '20-29': 84.9, '30-39': 81.0, '40-49': 84.0, 'old': 0, 'new': 83.44}
+2024-02-26 22:45:19,596 [trainer.py] => No NME accuracy
+2024-02-26 22:45:19,596 [trainer.py] => FeCAM: {'total': 83.56, '00-09': 87.3, '10-19': 80.1, '20-29': 84.4, '30-39': 81.2, '40-49': 84.8, 'old': 0, 'new': 83.56}
+2024-02-26 22:45:19,596 [trainer.py] => CNN top1 curve: [83.44]
+2024-02-26 22:45:19,596 [trainer.py] => CNN top5 curve: [96.5]
+2024-02-26 22:45:19,596 [trainer.py] => FeCAM top1 curve: [83.56]
+2024-02-26 22:45:19,596 [trainer.py] => FeCAM top5 curve: [96.44]
+
+2024-02-26 22:45:19,611 [fecam.py] => Learning on 50-60
+Normalising the embedded train vectors before PCA
+Processing class: 50
+Processing class: 51
+Processing class: 52
+Processing class: 53
+Processing class: 54
+Processing class: 55
+Processing class: 56
+Processing class: 57
+Processing class: 58
+Processing class: 59
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+2024-02-26 22:45:35,393 [trainer.py] => CNN: {'total': 71.75, '00-09': 82.2, '10-19': 72.8, '20-29': 78.5, '30-39': 74.9, '40-49': 68.4, '50-59': 53.7, 'old': 75.36, 'new': 53.7}
+2024-02-26 22:45:35,394 [trainer.py] => No NME accuracy
+2024-02-26 22:45:35,394 [trainer.py] => FeCAM: {'total': 70.55, '00-09': 84.7, '10-19': 74.0, '20-29': 82.7, '30-39': 76.2, '40-49': 79.4, '50-59': 26.3, 'old': 79.4, 'new': 26.3}
+2024-02-26 22:45:35,394 [trainer.py] => CNN top1 curve: [83.44, 71.75]
+2024-02-26 22:45:35,394 [trainer.py] => CNN top5 curve: [96.5, 89.6]
+2024-02-26 22:45:35,394 [trainer.py] => FeCAM top1 curve: [83.56, 70.55]
+2024-02-26 22:45:35,394 [trainer.py] => FeCAM top5 curve: [96.44, 90.6]
+
+2024-02-26 22:45:35,413 [fecam.py] => Learning on 60-70
+Normalising the embedded train vectors before PCA
+Processing class: 60
+Processing class: 61
+Processing class: 62
+Processing class: 63
+Processing class: 64
+Processing class: 65
+Processing class: 66
+Processing class: 67
+Processing class: 68
+Processing class: 69
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+2024-02-26 22:45:51,150 [trainer.py] => CNN: {'total': 64.66, '00-09': 75.0, '10-19': 70.1, '20-29': 77.1, '30-39': 70.6, '40-49': 64.0, '50-59': 45.8, '60-69': 50.0, 'old': 67.1, 'new': 50.0}
+2024-02-26 22:45:51,151 [trainer.py] => No NME accuracy
+2024-02-26 22:45:51,151 [trainer.py] => FeCAM: {'total': 60.34, '00-09': 84.2, '10-19': 72.0, '20-29': 81.5, '30-39': 75.6, '40-49': 77.7, '50-59': 16.0, '60-69': 15.4, 'old': 67.83, 'new': 15.4}
+2024-02-26 22:45:51,151 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66]
+2024-02-26 22:45:51,151 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54]
+2024-02-26 22:45:51,151 [trainer.py] => FeCAM top1 curve: [83.56, 70.55, 60.34]
+2024-02-26 22:45:51,151 [trainer.py] => FeCAM top5 curve: [96.44, 90.6, 84.93]
+
+2024-02-26 22:45:51,162 [fecam.py] => Learning on 70-80
+Normalising the embedded train vectors before PCA
+Processing class: 70
+Processing class: 71
+Processing class: 72
+Processing class: 73
+Processing class: 74
+Processing class: 75
+Processing class: 76
+Processing class: 77
+Processing class: 78
+Processing class: 79
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+2024-02-26 22:46:09,483 [trainer.py] => CNN: {'total': 59.18, '00-09': 73.6, '10-19': 68.4, '20-29': 76.9, '30-39': 69.1, '40-49': 60.6, '50-59': 37.2, '60-69': 45.7, '70-79': 41.9, 'old': 61.64, 'new': 41.9}
+2024-02-26 22:46:09,484 [trainer.py] => No NME accuracy
+2024-02-26 22:46:09,484 [trainer.py] => FeCAM: {'total': 54.09, '00-09': 83.8, '10-19': 71.9, '20-29': 81.4, '30-39': 75.3, '40-49': 77.4, '50-59': 12.6, '60-69': 13.3, '70-79': 17.0, 'old': 59.39, 'new': 17.0}
+2024-02-26 22:46:09,484 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18]
+2024-02-26 22:46:09,484 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09]
+2024-02-26 22:46:09,484 [trainer.py] => FeCAM top1 curve: [83.56, 70.55, 60.34, 54.09]
+2024-02-26 22:46:09,484 [trainer.py] => FeCAM top5 curve: [96.44, 90.6, 84.93, 79.11]
+
+2024-02-26 22:46:09,495 [fecam.py] => Learning on 80-90
+Normalising the embedded train vectors before PCA
+Processing class: 80
+Processing class: 81
+Processing class: 82
+Processing class: 83
+Processing class: 84
+Processing class: 85
+Processing class: 86
+Processing class: 87
+Processing class: 88
+Processing class: 89
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+2024-02-26 22:46:30,595 [trainer.py] => CNN: {'total': 54.08, '00-09': 67.9, '10-19': 63.6, '20-29': 73.2, '30-39': 68.8, '40-49': 57.2, '50-59': 32.6, '60-69': 40.9, '70-79': 38.1, '80-89': 44.4, 'old': 55.29, 'new': 44.4}
+2024-02-26 22:46:30,595 [trainer.py] => No NME accuracy
+2024-02-26 22:46:30,595 [trainer.py] => FeCAM: {'total': 48.28, '00-09': 83.3, '10-19': 71.4, '20-29': 81.1, '30-39': 74.8, '40-49': 77.2, '50-59': 10.2, '60-69': 11.8, '70-79': 14.8, '80-89': 9.9, 'old': 53.08, 'new': 9.9}
+2024-02-26 22:46:30,596 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08]
+2024-02-26 22:46:30,596 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74]
+2024-02-26 22:46:30,596 [trainer.py] => FeCAM top1 curve: [83.56, 70.55, 60.34, 54.09, 48.28]
+2024-02-26 22:46:30,596 [trainer.py] => FeCAM top5 curve: [96.44, 90.6, 84.93, 79.11, 73.39]
+
+2024-02-26 22:46:30,607 [fecam.py] => Learning on 90-100
+Normalising the embedded train vectors before PCA
+Processing class: 90
+Processing class: 91
+Processing class: 92
+Processing class: 93
+Processing class: 94
+Processing class: 95
+Processing class: 96
+Processing class: 97
+Processing class: 98
+Processing class: 99
+Classifying using Mahalanobis distance
+Normalising the embedded test vectors before PCA
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+Using shrinked, full, per class covariance
+2024-02-26 22:46:53,326 [trainer.py] => CNN: {'total': 50.36, '00-09': 57.7, '10-19': 63.6, '20-29': 71.4, '30-39': 68.5, '40-49': 56.8, '50-59': 29.6, '60-69': 38.9, '70-79': 36.6, '80-89': 42.7, '90-99': 37.8, 'old': 51.76, 'new': 37.8}
+2024-02-26 22:46:53,327 [trainer.py] => No NME accuracy
+2024-02-26 22:46:53,327 [trainer.py] => FeCAM: {'total': 44.45, '00-09': 83.2, '10-19': 71.3, '20-29': 80.8, '30-39': 74.6, '40-49': 77.1, '50-59': 9.4, '60-69': 11.0, '70-79': 13.2, '80-89': 9.2, '90-99': 14.7, 'old': 47.76, 'new': 14.7}
+2024-02-26 22:46:53,327 [trainer.py] => CNN top1 curve: [83.44, 71.75, 64.66, 59.18, 54.08, 50.36]
+2024-02-26 22:46:53,327 [trainer.py] => CNN top5 curve: [96.5, 89.6, 86.54, 84.09, 81.74, 79.63]
+2024-02-26 22:46:53,327 [trainer.py] => FeCAM top1 curve: [83.56, 70.55, 60.34, 54.09, 48.28, 44.45]
+2024-02-26 22:46:53,327 [trainer.py] => FeCAM top5 curve: [96.44, 90.6, 84.93, 79.11, 73.39, 69.59]

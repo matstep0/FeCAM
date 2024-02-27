@@ -201,22 +201,47 @@ class FeCAM(BaseLearner):
         # Fit PCA, cov and One-class SVM
         for cls, data in sorted(class_to_data.items()):
             print('Processing class:', cls)
-            
+
+            if self.args["tukey"]:
+                data = self._tukeys_transform(data)
+
             pca = PCA(n_components=self.args['pca_components'])
             pca_data = pca.fit_transform(data)
             self._pca.append(pca)
 
-            cov = MinCovDet(random_state=0).fit(pca_data)
-            self._pca_cov.append(torch.tensor(cov.covariance_))
+        # COV #1 - daje słabe wyniki, chyba poprawnie
+            # cov = MinCovDet(random_state=0).fit(pca_data)
+            # pca_cov = torch.tensor(cov.covariance_)  
 
-            proto = torch.tensor(np.mean(pca.transform(vectors), axis=0)).to(self._device)
-            self._pca_protos.append(proto)
+        # COV #2 - daje 512 wymiarową kowariancję, źle
+            # pca_cov = torch.from_numpy(pca.get_covariance())
+            
+        # COV #3 - dobre wyniki, porównywalne z FeCAM przy PROTO #2, chyba poprawnie
+            pca_cov = torch.from_numpy(np.cov(pca_data, rowvar=False))
+
+        # COV #4 - złe wyniki w połączeniu z PROTO #1, z PROTO #2 nie sprawdzone
+            # pca_cov = torch.from_numpy(np.cov(pca.transform(vectors), rowvar=False)) 
+
+            self._pca_cov.append(pca_cov)
+            
+        # PROTO #1 - bardzo słabe wyniki dla dowonego COV, chyba poprawnie
+            # pca_proto = torch.tensor(np.mean(pca_data, axis=0)).to(self._device)       
+
+        # PROTO #2 - dobre wyniki w połączeniu z COV #3, chyba niepoprawnie
+            pca_proto = torch.tensor(np.mean(pca.transform(vectors), axis=0)).to(self._device)
+
+            self._pca_protos.append(pca_proto)
 
             if self.args['pca_dist'] == 'ocsvm':
-                print('Traning one-class SVM for task:', self._cur_task)
+                print('Traning one-class SVM for class:', cls)
                 best_params = ocsvm_best_params_per_task[self._cur_task]
-                ocsvm = svm.OneClassSVM(gamma=best_params['gamma'], nu=best_params['nu'], kernel='rbf').fit(data)
+                ocsvm = svm.OneClassSVM(gamma=best_params['gamma'], nu=best_params['nu'], kernel='rbf').fit(pca_data)
                 self._ocsvm_models.append(ocsvm)
+
+        # Shrink PCA covariance - two times
+        for _ in range(2):
+            for cls in sorted(class_to_data.keys()):
+                self._pca_cov[cls] = self.shrink_cov(self._pca_cov[cls])
 
     # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
 

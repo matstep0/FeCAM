@@ -42,15 +42,15 @@ def compute_new_cov(model):
         idx_loader = DataLoader(idx_dataset, batch_size=model.args["batch_size"], shuffle=False, num_workers=4)
         vectors, _ = model._extract_vectors(idx_loader)
 
+        if model.args["tukey"]:
+            vectors = model._tukeys_transform(vectors)
+
         # PCA + (n1 | n2 | maha | ocsvm) ------------------
 
         pca = model._pca[class_idx]
         vectors = pca.transform(vectors)
 
         # ------------------ PCA + (n1 | n2 | maha | ocsvm) 
-
-        if model.args["tukey"]:
-            vectors = model._tukeys_transform(vectors)
         
         cov = torch.tensor(np.cov(vectors.T))
         
